@@ -177,39 +177,16 @@ const renderCard = (c) => `
             ? `<span class="status cx">Cancelled</span>`
             : `<span class="status out">Not checked in</span>`
       }
-      ${
-        c.checkedIn
-          ? `<button class="disabled" disabled>Already checked in</button>`
-          : c.status === "cancelled"
-            ? `<button class="disabled" disabled>Cancelled</button>`
-            : `<button id="btn" class="in" onclick="doCheckIn('${c.registrationId}')">Confirm check-in</button>`
-      }
+     ${
+       c.checkedIn
+         ? `<div class="status-pill in" style="margin-top:20px;text-align:center;">✓ Checked in</div>`
+         : c.status === "cancelled"
+           ? `<div class="status-pill cx" style="margin-top:20px;text-align:center;">Cancelled</div>`
+           : `<div class="status-pill out" style="margin-top:20px;text-align:center;">Not yet checked in — please see staff at the counter</div>`
+     }
     </div>
   </div>
-  <script>
-    async function doCheckIn(id) {
-      const btn = document.getElementById('btn');
-      btn.disabled = true; btn.textContent = 'Checking in…';
-      try {
-        const r = await fetch('/api/verify/checkin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ registrationId: id })
-        });
-        const j = await r.json();
-        if (r.ok) {
-          btn.textContent = '✓ ' + j.message;
-          btn.className = 'disabled';
-        } else {
-          btn.textContent = '⚠️ ' + j.message;
-          btn.className = 'disabled';
-        }
-      } catch (e) {
-        btn.textContent = '⚠️ Network error';
-        btn.className = 'disabled';
-      }
-    }
-  </script>
+
 </body>
 </html>
 `;
